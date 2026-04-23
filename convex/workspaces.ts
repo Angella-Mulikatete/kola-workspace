@@ -221,3 +221,31 @@ export const getWorkspaceProposal = query({
       .first();
   },
 });
+
+// Update proposal content
+export const updateProposal = mutation({
+  args: {
+    workspaceId: v.id("workspaces"),
+    content: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const existingProposal = await ctx.db
+      .query("proposals")
+      .withIndex("by_workspace", (q) => q.eq("workspaceId", args.workspaceId))
+      .first();
+
+    if (existingProposal) {
+      await ctx.db.patch(existingProposal._id, {
+        content: args.content,
+        lastUpdatedAt: Date.now(),
+      });
+      return existingProposal._id;
+    } else {
+      return await ctx.db.insert("proposals", {
+        workspaceId: args.workspaceId,
+        content: args.content,
+        lastUpdatedAt: Date.now(),
+      });
+    }
+  },
+});
