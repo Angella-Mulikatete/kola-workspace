@@ -38,8 +38,13 @@ export function ProposalView({
   const [generatedProposal, setGeneratedProposal] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState("");
+  const [mounted, setMounted] = useState(false);
   const updateProposal = useMutation(api.workspaces.updateProposal);
   const contentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Auto-generate proposal content from milestones
   const generateProposalContent = () => {
@@ -166,7 +171,7 @@ Thank you for considering this proposal. I look forward to working with you!`;
         <div className="flex items-center gap-2 text-sm text-zinc-400">
           <FileText className="w-4 h-4" />
           <span>
-            {proposal
+            {mounted && proposal
               ? `Last updated ${new Date(proposal.lastUpdatedAt).toLocaleDateString()}`
               : "Auto-generated from milestones"}
           </span>

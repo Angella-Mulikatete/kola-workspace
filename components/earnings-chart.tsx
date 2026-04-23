@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Id } from "@/convex/_generated/dataModel";
 import {
   LineChart,
@@ -34,6 +34,11 @@ type ChartView = "cumulative" | "breakdown" | "timeline";
 
 export function EarningsChart({ milestones }: EarningsChartProps) {
   const [view, setView] = useState<ChartView>("cumulative");
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Generate cumulative earnings data
   const cumulativeData = milestones
@@ -69,7 +74,7 @@ export function EarningsChart({ milestones }: EarningsChartProps) {
     }));
 
   // Generate timeline forecast (assuming 1 week per milestone)
-  const timelineData = milestones
+  const timelineData = mounted ? milestones
     .sort((a, b) => a.order - b.order)
     .reduce((acc: any[], milestone, index) => {
       const previousTotal = index > 0 ? acc[index - 1].earnings : 0;
@@ -85,7 +90,7 @@ export function EarningsChart({ milestones }: EarningsChartProps) {
           milestone: milestone.title,
         },
       ];
-    }, []);
+    }, []) : [];
 
   const totalEarnings = milestones.reduce((sum, m) => sum + m.cost, 0);
   const totalHours = milestones.reduce((sum, m) => sum + m.estimatedHours, 0);
@@ -95,6 +100,25 @@ export function EarningsChart({ milestones }: EarningsChartProps) {
   const earnedSoFar = milestones
     .filter((m) => m.status === "done")
     .reduce((sum, m) => sum + m.cost, 0);
+
+  // Prevent hydration mismatch
+  if (!mounted) {
+    return (
+      <div className="space-y-4">
+        <div className="flex gap-2 p-1 bg-zinc-900 rounded-lg border border-white/10 h-[42px]" />
+        <div className="grid grid-cols-2 gap-4">
+          <div className="p-4 rounded-xl bg-zinc-900 border border-white/10 h-[80px]" />
+          <div className="p-4 rounded-xl bg-zinc-900 border border-white/10 h-[80px]" />
+        </div>
+        <div className="p-6 rounded-xl bg-zinc-900 border border-white/10 h-[300px]" />
+        <div className="grid grid-cols-3 gap-4">
+          <div className="p-4 rounded-xl bg-zinc-900 border border-white/10 h-[60px]" />
+          <div className="p-4 rounded-xl bg-zinc-900 border border-white/10 h-[60px]" />
+          <div className="p-4 rounded-xl bg-zinc-900 border border-white/10 h-[60px]" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
