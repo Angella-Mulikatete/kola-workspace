@@ -2,35 +2,31 @@ import { v } from "convex/values";
 import { action, internalAction, internalMutation, internalQuery, query } from "./_generated/server";
 import { internal } from "./_generated/api";
 
-// Fetch jobs from RapidAPI (JSearch API)
+// Fetch jobs from SerpAPI (Google Jobs API)
 export const fetchJobsFromAPI = internalAction({
   args: {
     skill: v.string(),
     location: v.string(),
   },
   handler: async (ctx, args) => {
-    const rapidApiKey = process.env.RAPID_API;
+    const serpApiKey = process.env.SERP_API_KEY;
     
-    if (!rapidApiKey) {
-      console.error("RAPID_API key not found");
+    if (!serpApiKey) {
+      console.error("SERP_API_KEY not found");
       return [];
     }
 
     try {
-      // Using JSearch API from RapidAPI
+      // Using Google Jobs API from SerpAPI
       const query = `${args.skill} freelance remote`;
-      const url = `https://jsearch.p.rapidapi.com/search?query=${encodeURIComponent(
+      const url = `https://serpapi.com/search.json?engine=google_jobs&q=${encodeURIComponent(
         query
-      )}&page=1&num_pages=1&date_posted=all`;
+      )}&location=${encodeURIComponent(args.location)}&api_key=${serpApiKey}`;
 
       console.log("Fetching jobs with query:", query);
 
       const response = await fetch(url, {
         method: "GET",
-        headers: {
-          "X-RapidAPI-Key": rapidApiKey,
-          "X-RapidAPI-Host": "jsearch.p.rapidapi.com",
-        },
       });
 
       console.log("API Response status:", response.status);
@@ -46,15 +42,15 @@ export const fetchJobsFromAPI = internalAction({
       const data = await response.json();
       console.log("API Response data:", data);
       
-      // Extract relevant job data
-      const jobs = data.data?.slice(0, 10).map((job: any) => ({
-        title: job.job_title || "Untitled Job",
-        description: job.job_description || "",
-        url: job.job_apply_link || job.job_google_link || "",
-        source: "jsearch",
-        employer: job.employer_name || "Unknown",
-        location: job.job_city || job.job_country || args.location,
-        postedAt: job.job_posted_at_datetime_utc || new Date().toISOString(),
+      // Extract relevant job data from SerpAPI response
+      const jobs = data.jobs_results?.slice(0, 10).map((job: any) => ({
+        title: job.title || "Untitled Job",
+        description: job.description || "",
+        url: job.share_link || job.apply_options?.[0]?.link || "",
+        source: "serpapi",
+        employer: job.company_name || "Unknown",
+        location: job.location || args.location,
+        postedAt: job.detected_extensions?.posted_at || new Date().toISOString(),
       })) || [];
 
       console.log(`Successfully fetched ${jobs.length} jobs`);
