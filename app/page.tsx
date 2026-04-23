@@ -18,12 +18,21 @@ export default function Home() {
     user ? { firebaseId: user.uid } : "skip"
   );
 
+  // Handle onboarding modal
   useEffect(() => {
     if (user && needsOnboarding) {
       setShowOnboarding(true);
     }
   }, [user, needsOnboarding]);
 
+  // Redirect to dashboard if user is authenticated and onboarded
+  useEffect(() => {
+    if (user && needsOnboarding === false) {
+      window.location.href = "/dashboard";
+    }
+  }, [user, needsOnboarding]);
+
+  // Loading state
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -38,14 +47,8 @@ export default function Home() {
     );
   }
 
-  // Redirect to dashboard if user is authenticated and onboarded
-  useEffect(() => {
-    if (user && !needsOnboarding) {
-      window.location.href = "/dashboard";
-    }
-  }, [user, needsOnboarding]);
-
-  if (user && !needsOnboarding) {
+  // Redirecting state
+  if (user && needsOnboarding === false) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <motion.div
@@ -79,6 +82,7 @@ export default function Home() {
             transition={{ delay: 0.2, duration: 0.5 }}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm"
           >
+            <Sparkles className="w-4 h-4 text-purple-400" />
             <span className="text-sm font-medium">AI-Powered Workspace</span>
           </motion.div>
 

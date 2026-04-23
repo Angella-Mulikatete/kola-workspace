@@ -3,12 +3,13 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/providers/auth-provider";
-import { useQuery } from "convex/react";
+import { useQuery, useMutation, useAction } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useChat } from "@ai-sdk/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Sparkles, Link as LinkIcon, Loader2, LogOut } from "lucide-react";
+import { JobCard } from "@/components/job-card";
+import { Sparkles, Link as LinkIcon, Loader2, LogOut, RefreshCw } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/toast";
 
@@ -23,16 +24,25 @@ export default function DashboardPage() {
     user ? { firebaseId: user.uid } : "skip"
   );
 
+  const recommendedJobs = useQuery(
+    api.jobs.getRecommendedJobs,
+    currentUser ? { userId: currentUser._id, limit: 8 } : "skip"
+  );
+
+  const triggerJobDiscovery = useAction(api.jobs.triggerJobDiscovery);
+  const [isDiscovering, setIsDiscovering] = useState(false);
+
   const { messages, sendMessage, status } = useChat();
   const isLoading = status === "streaming";
 
-  const handleGenerate = async () => {
-    if (!jobUrl.trim() || !currentUser) return;
+  const handleGenerate = async (url?: string) => {
+    const targetUrl = url || jobUrl;
+    if (!targetUrl.trim() || !currentUser) return;
 
     try {
       // Send message to AI to analyze and create workspace
       await sendMessage({
-        text: `Please analyze this job posting and create a complete workspace with milestones and a professional proposal: ${jobUrl}
+        text: `Please analyze this job posting and create a complete workspace with milestones and a professional proposal: ${targetUrl}
         
 My profile:
 - Skill: ${currentUser.primarySkill}
@@ -41,6 +51,11 @@ My profile:
       });
 
       showToast("success", "Generating workspace...");
+      
+      // Clear the input if it was from the manual input
+      if (!url) {
+        setJobUrl("");
+      }
     } catch (error) {
       console.error("Error generating workspace:", error);
       showToast("error", "Failed to generate workspace. Please try again.");
@@ -50,6 +65,21 @@ My profile:
   const handleSignOut = async () => {
     await signOut();
     router.push("/");
+  };
+
+  const handleDiscoverJobs = async () => {
+    if (!currentUser) return;
+    
+    setIsDiscovering(true);
+    try {
+      await triggerJobDiscovery({ userId: currentUser._id });
+      showToast("success", "Job discovery started! New gigs will appear shortly.");
+    } catch (error) {
+      console.error("Error discovering jobs:", error);
+      showToast("error", "Failed to discover jobs. Please try again.");
+    } finally {
+      setIsDiscovering(false);
+    }
   };
 
   if (!currentUser) {
@@ -143,7 +173,7 @@ My profile:
                     className="flex-1 h-12 text-base"
                   />
                   <Button
-                    onClick={handleGenerate}
+                    onClick={() => handleGenerate()}
                     disabled={!jobUrl.trim() || isLoading}
                     size="lg"
                     className="px-8 gap-2"
@@ -236,7 +266,7 @@ My profile:
             </motion.div>
           )}
 
-          {/* Smart Discovery Section (Coming in Day 3) */}
+          {/* Smart Discovery Section */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -250,28 +280,65 @@ My profile:
                   Curated jobs matching your skills and location
                 </p>
               </div>
-              <Button variant="outline" size="sm" disabled>
-                Coming Soon
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-2"
+                onClick={handleDiscoverJobs}
+                disabled={isDiscovering}
+              >
+                <RefreshCw className={`w-4 h-4 ${isDiscovering ? "animate-spin" : ""}`} />
+                {isDiscovering ? "Discovering..." : "Discover Now"}
               </Button>
             </div>
 
-            {/* Placeholder cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {[1, 2, 3, 4].map((i) => (
-                <div
-                  key={i}
-                  className="p-6 rounded-xl bg-zinc-900/50 border border-white/5 space-y-3"
-                >
-                  <div className="h-4 bg-zinc-800 rounded w-3/4 animate-pulse" />
-                  <div className="h-3 bg-zinc-800 rounded w-full animate-pulse" />
-                  <div className="h-3 bg-zinc-800 rounded w-5/6 animate-pulse" />
-                  <div className="flex gap-2 pt-2">
-                    <div className="h-6 bg-zinc-800 rounded w-16 animate-pulse" />
-                    <div className="h-6 bg-zinc-800 rounded w-20 animate-pulse" />
+            {/* Job Cards */}
+            {recommendedJobs === undefined ? (
+              // Loading state
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[1, 2, 3, 4].map((i) => (
+                  <div
+                    key={i}
+                    className="p-6 rounded-xl bg-zinc-900/50 border border-white/5 space-y-3"
+                  >
+                    <div className="h-4 bg-zinc-800 rounded w-3/4 animate-pulse" />
+                    <div className="h-3 bg-zinc-800 rounded w-full animate-pulse" />
+                    <div className="h-3 bg-zinc-800 rounded w-5/6 animate-pulse" />
+                    <div className="flex gap-2 pt-2">
+                      <div className="h-6 bg-zinc-800 rounded w-16 animate-pulse" />
+                      <div className="h-6 bg-zinc-800 rounded w-20 animate-pulse" />
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : recommendedJobs.length === 0 ? (
+              // Empty state
+              <div className="text-center py-12 px-4 rounded-xl bg-zinc-900/50 border border-white/5">
+                <Sparkles className="w-12 h-12 text-zinc-600 mx-auto mb-4" />
+                <h4 className="text-lg font-semibold mb-2">No jobs yet</h4>
+                <p className="text-zinc-400 mb-4">
+                  Our AI is discovering the perfect gigs for you. Check back soon!
+                </p>
+                <p className="text-sm text-zinc-500">
+                  Job discovery runs automatically every 6 hours
+                </p>
+              </div>
+            ) : (
+              // Job cards
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {recommendedJobs.map((job) => (
+                  <JobCard
+                    key={job._id}
+                    title={job.title}
+                    description={job.description}
+                    source={job.source}
+                    matchScore={job.matchScore}
+                    jobUrl={job.jobUrl}
+                    onGeneratePitch={() => handleGenerate(job.jobUrl)}
+                  />
+                ))}
+              </div>
+            )}
           </motion.div>
         </div>
       </main>
