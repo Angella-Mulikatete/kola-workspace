@@ -85,12 +85,21 @@ export default function DashboardPage() {
     
     setIsDiscovering(true);
     try {
-      await triggerJobDiscovery({ 
+      const result = await triggerJobDiscovery({ 
         userId: currentUser._id,
         skill: searchQuery.trim() || undefined,
         location: searchLocation.trim() || undefined,
       });
-      showToast("success", `Discovering ${skill} jobs in ${location}...`);
+      
+      console.log("Job discovery result:", result);
+      
+      if (result.savedJobs > 0) {
+        showToast("success", `Found ${result.savedJobs} matching jobs! Check below.`);
+      } else if (result.totalJobs > 0) {
+        showToast("info", `Found ${result.totalJobs} jobs but none matched your profile well enough (score > 60%)`);
+      } else {
+        showToast("info", "No jobs found. Try different search terms.");
+      }
     } catch (error) {
       console.error("Error discovering jobs:", error);
       showToast("error", "Failed to discover jobs. Please try again.");
