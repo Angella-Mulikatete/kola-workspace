@@ -306,11 +306,61 @@ export const getRecommendedJobs = query({
 export const triggerJobDiscovery = action({
   args: {
     userId: v.id("users"),
+    skill: v.optional(v.string()),
+    location: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    await ctx.runAction(internal.jobs.discoverJobsForUser, {
+    // Get user profile to use as defaults
+    const user = await ctx.runQuery(internal.jobs.getUserProfile, {
       userId: args.userId,
     });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Use provided skill/location or fall back to user profile
+    const skill = args.skill || user.primarySkill;
+    const location = args.location || user.location;
+
+    if (!skill || !location) {
+      throw new Error("Skill and location are required");
+    }
+
+    // Fetch jobs with custom or profile data
+    const jobs = await ctx.runAction(internal.jobs.fetchJobsFromAPI, {
+      skill,
+      location,
+    });
+
+    console.log(`Found ${jobs.length} jobs for ${skill} in ${location}`);
+
+    // Score and save each job
+    for (const job of jobs) {
+      try {
+        const score = await ctx.runAction(internal.jobs.scoreJob, {
+          jobTitle: job.title,
+          jobDescription: job.description,
+          userSkill: skill,
+          userLocation: location,
+        });
+
+        // Only save jobs with score > 0.6
+        if (score > 0.6) {
+          await ctx.runMutation(internal.jobs.saveRecommendedJob, {
+            userId: args.userId,
+            source: job.source,
+            jobUrl: job.url,
+            title: job.title,
+            description: job.description,
+            matchScore: score,
+          });
+        }
+      } catch (error) {
+        console.error("Error processing job:", error);
+      }
+    }
+
     return { success: true };
   },
 });

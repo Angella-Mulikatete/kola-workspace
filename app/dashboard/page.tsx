@@ -18,6 +18,8 @@ export default function DashboardPage() {
   const router = useRouter();
   const { showToast } = useToast();
   const [jobUrl, setJobUrl] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchLocation, setSearchLocation] = useState("");
 
   const currentUser = useQuery(
     api.users.getCurrentUser,
@@ -72,10 +74,23 @@ export default function DashboardPage() {
   const handleDiscoverJobs = async () => {
     if (!currentUser) return;
     
+    // Use custom search if provided, otherwise use profile data
+    const skill = searchQuery.trim() || currentUser.primarySkill;
+    const location = searchLocation.trim() || currentUser.location;
+    
+    if (!skill || !location) {
+      showToast("error", "Please enter both search query and location");
+      return;
+    }
+    
     setIsDiscovering(true);
     try {
-      await triggerJobDiscovery({ userId: currentUser._id });
-      showToast("success", "Job discovery started! New gigs will appear shortly.");
+      await triggerJobDiscovery({ 
+        userId: currentUser._id,
+        skill: searchQuery.trim() || undefined,
+        location: searchLocation.trim() || undefined,
+      });
+      showToast("success", `Discovering ${skill} jobs in ${location}...`);
     } catch (error) {
       console.error("Error discovering jobs:", error);
       showToast("error", "Failed to discover jobs. Please try again.");
@@ -275,23 +290,75 @@ export default function DashboardPage() {
             transition={{ delay: 0.4 }}
             className="space-y-6"
           >
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-2xl font-bold">Recommended Gigs</h3>
-                <p className="text-zinc-400">
-                  Curated jobs matching your skills and location
-                </p>
+            <div>
+              <h3 className="text-2xl font-bold">Recommended Gigs</h3>
+              <p className="text-zinc-400">
+                Curated jobs matching your skills and location
+              </p>
+            </div>
+
+            {/* Job Discovery Search */}
+            <div className="relative group">
+              {/* Glow effect */}
+              <div className="absolute -inset-1 bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 rounded-2xl blur-lg opacity-25 group-hover:opacity-40 transition-opacity" />
+
+              {/* Search container */}
+              <div className="relative bg-zinc-900 border border-white/10 rounded-2xl p-6 space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-3 rounded-xl bg-gradient-to-br from-green-500/20 to-teal-500/20 border border-green-500/30">
+                    <RefreshCw className="w-6 h-6 text-green-400" />
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="text-lg font-semibold">Discover Jobs</h4>
+                    <p className="text-sm text-zinc-400">
+                      Search for jobs by skill and location
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <Input
+                    type="text"
+                    placeholder={`Search query (e.g., ${currentUser.primarySkill})`}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    disabled={isDiscovering}
+                    className="h-12 text-base"
+                  />
+                  <Input
+                    type="text"
+                    placeholder={`Location (e.g., ${currentUser.location})`}
+                    value={searchLocation}
+                    onChange={(e) => setSearchLocation(e.target.value)}
+                    disabled={isDiscovering}
+                    className="h-12 text-base"
+                  />
+                </div>
+
+                <Button
+                  onClick={handleDiscoverJobs}
+                  disabled={isDiscovering}
+                  size="lg"
+                  className="w-full gap-2 bg-green-600 hover:bg-green-700"
+                >
+                  {isDiscovering ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Discovering Jobs...
+                    </>
+                  ) : (
+                    <>
+                      <RefreshCw className="w-4 h-4" />
+                      Discover Now
+                    </>
+                  )}
+                </Button>
+
+                {/* Default values hint */}
+                <div className="text-xs text-zinc-500 text-center">
+                  Leave empty to use your profile: {currentUser.primarySkill} in {currentUser.location}
+                </div>
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                className="gap-2"
-                onClick={handleDiscoverJobs}
-                disabled={isDiscovering}
-              >
-                <RefreshCw className={`w-4 h-4 ${isDiscovering ? "animate-spin" : ""}`} />
-                {isDiscovering ? "Discovering..." : "Discover Now"}
-              </Button>
             </div>
 
             {/* Job Cards */}
