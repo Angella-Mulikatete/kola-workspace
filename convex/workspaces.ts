@@ -19,6 +19,51 @@ export const createWorkspace = mutation({
       createdAt: Date.now(),
     });
 
+    // Create sample milestones
+    const sampleMilestones = [
+      {
+        title: "Project Setup & Planning",
+        description: "Initial project setup, requirements gathering, and planning",
+        estimatedHours: 8,
+        order: 0,
+      },
+      {
+        title: "Core Development",
+        description: "Main development work and feature implementation",
+        estimatedHours: 40,
+        order: 1,
+      },
+      {
+        title: "Testing & QA",
+        description: "Comprehensive testing and quality assurance",
+        estimatedHours: 16,
+        order: 2,
+      },
+      {
+        title: "Deployment & Documentation",
+        description: "Final deployment and documentation",
+        estimatedHours: 8,
+        order: 3,
+      },
+    ];
+
+    // Get user's hourly rate
+    const user = await ctx.db.get(args.userId);
+    const hourlyRate = user?.hourlyRate || 50;
+
+    // Create milestones
+    for (const milestone of sampleMilestones) {
+      await ctx.db.insert("milestones", {
+        workspaceId,
+        title: milestone.title,
+        description: milestone.description,
+        status: "todo",
+        estimatedHours: milestone.estimatedHours,
+        cost: milestone.estimatedHours * hourlyRate,
+        order: milestone.order,
+      });
+    }
+
     return workspaceId;
   },
 });

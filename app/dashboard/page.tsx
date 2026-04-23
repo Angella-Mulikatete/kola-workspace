@@ -30,6 +30,7 @@ export default function DashboardPage() {
   );
 
   const triggerJobDiscovery = useAction(api.jobs.triggerJobDiscovery);
+  const createWorkspace = useMutation(api.workspaces.createWorkspace);
   const [isDiscovering, setIsDiscovering] = useState(false);
 
   const { messages, sendMessage, status } = useChat();
@@ -40,17 +41,18 @@ export default function DashboardPage() {
     if (!targetUrl.trim() || !currentUser) return;
 
     try {
-      // Send message to AI to analyze and create workspace
-      await sendMessage({
-        text: `Please analyze this job posting and create a complete workspace with milestones and a professional proposal: ${targetUrl}
-        
-My profile:
-- Skill: ${currentUser.primarySkill}
-- Rate: $${currentUser.hourlyRate}/hr
-- Location: ${currentUser.location}`,
+      // Create workspace first
+      const workspaceId = await createWorkspace({
+        userId: currentUser._id,
+        jobUrl: targetUrl,
+        jobTitle: "New Project", // Will be updated by AI
+        jobDescription: "",
       });
 
-      showToast("success", "Generating workspace...");
+      // Navigate to workspace page
+      router.push(`/workspace/${workspaceId}`);
+      
+      showToast("success", "Workspace created! Generating details...");
       
       // Clear the input if it was from the manual input
       if (!url) {
@@ -58,7 +60,7 @@ My profile:
       }
     } catch (error) {
       console.error("Error generating workspace:", error);
-      showToast("error", "Failed to generate workspace. Please try again.");
+      showToast("error", "Failed to create workspace. Please try again.");
     }
   };
 
