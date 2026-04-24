@@ -1,19 +1,8 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ConvexClientProvider } from "@/providers/convex-provider";
 import { AuthProvider } from "@/providers/auth-provider";
 import { ToastProvider } from "@/components/ui/toast";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Kola Workspace - AI-Powered Freelance Command Center",
@@ -26,11 +15,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
-    >
-      <body className="min-h-full flex flex-col bg-black text-white">
+    <html lang="en" className="h-full antialiased dark">
+      <body className="min-h-full flex flex-col bg-black text-white font-sans">
         <ConvexClientProvider>
           <AuthProvider>
             <ToastProvider>{children}</ToastProvider>
