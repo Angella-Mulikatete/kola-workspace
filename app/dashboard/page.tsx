@@ -128,7 +128,6 @@ export default function DashboardPage() {
       <header className="border-b border-white/10 backdrop-blur-sm bg-black/50 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-6 h-6 text-purple-400" />
             <h1 className="text-xl font-bold">Kola Workspace</h1>
           </div>
           <div className="flex items-center gap-4">
@@ -158,7 +157,7 @@ export default function DashboardPage() {
             className="text-center space-y-4"
           >
             <h2 className="text-4xl md:text-5xl font-bold">
-              Welcome back, {user?.displayName?.split(" ")[0]}! 👋
+              Welcome back, {user?.displayName?.split(" ")[0]}! 
             </h2>
             <p className="text-xl text-zinc-400">
               Paste a job URL to generate your complete project workspace
@@ -217,7 +216,6 @@ export default function DashboardPage() {
                       </>
                     ) : (
                       <>
-                        <Sparkles className="w-4 h-4" />
                         Generate Pitch
                       </>
                     )}
