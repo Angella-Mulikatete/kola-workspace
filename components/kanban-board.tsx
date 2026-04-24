@@ -20,6 +20,8 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { MilestoneCard } from "./milestone-card";
+import { celebrateMilestone } from "@/lib/confetti";
+import { useToast } from "./ui/toast";
 
 interface Milestone {
   _id: Id<"milestones">;
@@ -40,6 +42,7 @@ interface KanbanBoardProps {
 export function KanbanBoard({ workspaceId, milestones }: KanbanBoardProps) {
   const [localMilestones, setLocalMilestones] = useState(milestones);
   const updateMilestone = useMutation(api.workspaces.updateMilestone);
+  const { showToast } = useToast();
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -91,12 +94,24 @@ export function KanbanBoard({ workspaceId, milestones }: KanbanBoardProps) {
     }
   ) => {
     try {
+      // Check if milestone is being marked as done
+      const milestone = localMilestones.find((m) => m._id === milestoneId);
+      const wasNotDone = milestone && milestone.status !== "done";
+      const isNowDone = updates.status === "done";
+
       await updateMilestone({
         milestoneId,
         ...updates,
       });
+
+      // Celebrate when milestone is completed!
+      if (wasNotDone && isNowDone) {
+        celebrateMilestone();
+        showToast("success", `🎉 Milestone completed! Great work!`);
+      }
     } catch (error) {
       console.error("Error updating milestone:", error);
+      showToast("error", "Failed to update milestone");
     }
   };
 

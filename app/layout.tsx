@@ -4,6 +4,7 @@ import "./globals.css";
 import { ConvexClientProvider } from "@/providers/convex-provider";
 import { AuthProvider } from "@/providers/auth-provider";
 import { ToastProvider } from "@/components/ui/toast";
+import { KeyboardShortcuts } from "@/components/keyboard-shortcuts";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,7 +34,10 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-black text-white">
         <ConvexClientProvider>
           <AuthProvider>
-            <ToastProvider>{children}</ToastProvider>
+            <ToastProvider>
+              {children}
+              <KeyboardShortcuts />
+            </ToastProvider>
           </AuthProvider>
         </ConvexClientProvider>
       </body>

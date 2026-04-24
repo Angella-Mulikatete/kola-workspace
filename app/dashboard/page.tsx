@@ -11,7 +11,10 @@ import { Input } from "@/components/ui/input";
 import { JobCard } from "@/components/job-card";
 import { Sparkles, Link as LinkIcon, Loader2, LogOut, RefreshCw } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { celebrateWorkspaceCreation } from "@/lib/confetti";
 import { useToast } from "@/components/ui/toast";
+import { OnboardingTour } from "@/components/onboarding-tour";
+import { FloatingActionButton } from "@/components/floating-action-button";
 
 export default function DashboardPage() {
   const { user, signOut } = useAuth();
@@ -50,6 +53,9 @@ export default function DashboardPage() {
         jobTitle: "New Project", // Will be updated by AI
         jobDescription: "",
       });
+
+      // Celebrate workspace creation!
+      celebrateWorkspaceCreation();
 
       // Navigate to workspace page
       router.push(`/workspace/${workspaceId}`);
@@ -424,6 +430,22 @@ export default function DashboardPage() {
       {/* Decorative elements */}
       <div className="fixed top-1/4 left-1/4 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl pointer-events-none" />
       <div className="fixed bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
+
+      {/* Onboarding Tour */}
+      <OnboardingTour />
+
+      {/* Floating Action Button */}
+      <FloatingActionButton
+        onNewWorkspace={() => {
+          const input = document.querySelector('input[type="url"]') as HTMLInputElement;
+          input?.focus();
+        }}
+        onDiscoverJobs={handleDiscoverJobs}
+        onShowShortcuts={() => {
+          // Trigger keyboard shortcut panel
+          window.dispatchEvent(new KeyboardEvent('keydown', { key: '/', ctrlKey: true }));
+        }}
+      />
     </div>
   );
 }

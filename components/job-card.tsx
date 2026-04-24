@@ -39,9 +39,9 @@ export function JobCard({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -4 }}
+      whileHover={{ y: -4, scale: 1.02 }}
       transition={{ duration: 0.2 }}
-      className="p-6 rounded-xl bg-zinc-900 border border-white/10 hover:border-white/20 transition-all space-y-4 group"
+      className="p-6 rounded-xl bg-zinc-900 border border-white/10 hover:border-purple-500/30 hover:shadow-lg hover:shadow-purple-500/10 transition-all space-y-4 group"
     >
       {/* Header */}
       <div className="space-y-2">
@@ -84,9 +84,9 @@ export function JobCard({
         <Button
           onClick={onGeneratePitch}
           size="sm"
-          className="gap-2"
+          className="gap-2 hover:scale-105 transition-transform"
         >
-          <Sparkles className="w-3 h-3" />
+          <Sparkles className="w-3 h-3 animate-pulse" />
           Generate Pitch
         </Button>
       </div>
