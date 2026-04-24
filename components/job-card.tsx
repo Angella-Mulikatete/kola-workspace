@@ -86,7 +86,6 @@ export function JobCard({
           size="sm"
           className="gap-2 hover:scale-105 transition-transform"
         >
-          <Sparkles className="w-3 h-3 animate-pulse" />
           Generate Pitch
         </Button>
       </div>
