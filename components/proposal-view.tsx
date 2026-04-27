@@ -28,12 +28,19 @@ interface ProposalViewProps {
   workspaceId: Id<"workspaces">;
   proposal: Proposal | null | undefined;
   milestones: Milestone[];
+  userProfile?: {
+    displayName?: string;
+    primarySkill?: string;
+    location?: string;
+    hourlyRate?: number;
+  };
 }
 
 export function ProposalView({
   workspaceId,
   proposal,
   milestones,
+  userProfile,
 }: ProposalViewProps) {
   const [generatedProposal, setGeneratedProposal] = useState("");
   const [isEditing, setIsEditing] = useState(false);
@@ -46,15 +53,46 @@ export function ProposalView({
     setMounted(true);
   }, []);
 
+  // Format currency in UGX
+  const formatUGX = (amount: number) => {
+    return `UGX ${amount.toLocaleString('en-UG')}`;
+  };
+
   // Auto-generate proposal content from milestones
   const generateProposalContent = () => {
     const totalHours = milestones.reduce((sum, m) => sum + m.estimatedHours, 0);
     const totalCost = milestones.reduce((sum, m) => sum + m.cost, 0);
 
+    // Generate personalized introduction
+    const introduction = userProfile ? `## About Me
+
+Hi! I'm ${userProfile.displayName || 'a professional freelancer'}, a ${userProfile.primarySkill || 'skilled professional'} based in ${userProfile.location || 'Uganda'}. I specialize in delivering high-quality work that exceeds client expectations.
+
+### Why I'm the Best Fit for This Project
+
+- **Expertise**: With my background in ${userProfile.primarySkill || 'this field'}, I have the technical skills and experience needed to execute this project successfully.
+- **Quality Focus**: I'm committed to delivering work that not only meets but exceeds your requirements.
+- **Clear Communication**: I believe in transparent, regular updates throughout the project lifecycle.
+- **Timely Delivery**: I respect deadlines and ensure projects are completed on schedule.
+- **Value for Money**: My rate of ${formatUGX(userProfile.hourlyRate || 0)}/hour reflects the quality and expertise I bring to your project.
+
+### What I Can Do for You
+
+I will take full ownership of this project from start to finish, ensuring:
+- Clean, professional deliverables
+- Regular progress updates
+- Responsive communication
+- Attention to detail
+- Post-delivery support
+
+` : '';
+
     return `# Project Proposal
 
 ## Overview
 This proposal outlines the project scope, timeline, and cost breakdown for the requested work.
+
+${introduction}
 
 ## Project Milestones
 
@@ -62,9 +100,9 @@ ${milestones
   .sort((a, b) => a.order - b.order)
   .map(
     (m, i) => `### ${i + 1}. ${m.title}
-${m.description ? m.description : ""}
+${m.description ? m.description + '\n' : ""}
 - **Estimated Time:** ${m.estimatedHours} hours
-- **Cost:** $${m.cost.toLocaleString()}
+- **Cost:** ${formatUGX(m.cost)}
 `
   )
   .join("\n")}
@@ -72,13 +110,33 @@ ${m.description ? m.description : ""}
 ## Summary
 
 - **Total Estimated Time:** ${totalHours} hours
-- **Total Project Cost:** $${totalCost.toLocaleString()}
+- **Total Project Cost:** ${formatUGX(totalCost)}
+${userProfile ? `- **Hourly Rate:** ${formatUGX(userProfile.hourlyRate || 0)}/hour` : ''}
+
+## Payment Terms
+
+- 50% upfront payment to begin work
+- 50% upon project completion and approval
+- Payment via [Your preferred method]
+
+## Timeline
+
+Work will commence immediately upon approval and payment. Each milestone will be delivered according to the estimated timeline, with regular updates throughout the process.
 
 ## Next Steps
 
-Upon approval, we can begin work immediately. I'm committed to delivering high-quality results within the estimated timeline.
+1. Review this proposal and milestones
+2. Discuss any questions or modifications
+3. Approve and make initial payment
+4. Begin work immediately
 
-Thank you for considering this proposal. I look forward to working with you!`;
+I'm excited about the opportunity to work on this project and confident I can deliver exceptional results. Thank you for considering my proposal!
+
+---
+
+**${userProfile?.displayName || 'Your Name'}**  
+${userProfile?.primarySkill || 'Professional Freelancer'}  
+${userProfile?.location || 'Location'}`;
   };
 
   useEffect(() => {
@@ -90,7 +148,7 @@ Thank you for considering this proposal. I look forward to working with you!`;
     if (!isEditing) {
       setEditedContent(content);
     }
-  }, [milestones, isEditing]);
+  }, [milestones, isEditing, userProfile]);
 
   const handleEdit = () => {
     setEditedContent(generatedProposal);
@@ -126,7 +184,7 @@ Thank you for considering this proposal. I look forward to working with you!`;
 
     const content = contentRef.current?.innerHTML || "";
     
-    printWindow.document.write(`
+    const htmlContent = `
       <!DOCTYPE html>
       <html>
         <head>
@@ -160,8 +218,10 @@ Thank you for considering this proposal. I look forward to working with you!`;
           </script>
         </body>
       </html>
-    `);
+    `;
     
+    printWindow.document.open();
+    printWindow.document.write(htmlContent);
     printWindow.document.close();
   };
 

@@ -40,6 +40,11 @@ export function EarningsChart({ milestones }: EarningsChartProps) {
     setMounted(true);
   }, []);
 
+  // Format currency in UGX
+  const formatUGX = (amount: number) => {
+    return `UGX ${amount.toLocaleString('en-UG')}`;
+  };
+
   // Generate cumulative earnings data
   const cumulativeData = milestones
     .sort((a, b) => a.order - b.order)
@@ -167,7 +172,7 @@ export function EarningsChart({ milestones }: EarningsChartProps) {
           className="p-4 rounded-xl bg-zinc-900 border border-white/10"
         >
           <div className="text-2xl font-bold text-green-400">
-            ${totalEarnings.toLocaleString()}
+            {formatUGX(totalEarnings)}
           </div>
           <div className="text-xs text-zinc-400">Total Project Value</div>
         </motion.div>
@@ -179,7 +184,7 @@ export function EarningsChart({ milestones }: EarningsChartProps) {
           className="p-4 rounded-xl bg-zinc-900 border border-white/10"
         >
           <div className="text-2xl font-bold text-blue-400">
-            ${earnedSoFar.toLocaleString()}
+            {formatUGX(earnedSoFar)}
           </div>
           <div className="text-xs text-zinc-400">
             Earned ({completedMilestones}/{milestones.length} done)
@@ -216,7 +221,7 @@ export function EarningsChart({ milestones }: EarningsChartProps) {
                   borderRadius: "8px",
                   color: "#fff",
                 }}
-                formatter={(value: any) => [`$${value.toLocaleString()}`, "Earnings"]}
+                formatter={(value: any) => [formatUGX(value), "Earnings"]}
               />
               <Line
                 type="monotone"
@@ -252,7 +257,7 @@ export function EarningsChart({ milestones }: EarningsChartProps) {
                   borderRadius: "8px",
                   color: "#fff",
                 }}
-                formatter={(value: any) => [`$${value.toLocaleString()}`, "Cost"]}
+                formatter={(value: any) => [formatUGX(value), "Cost"]}
               />
               <Bar
                 dataKey="cost"
@@ -285,7 +290,7 @@ export function EarningsChart({ milestones }: EarningsChartProps) {
                   borderRadius: "8px",
                   color: "#fff",
                 }}
-                formatter={(value: any) => [`$${value.toLocaleString()}`, "Projected Earnings"]}
+                formatter={(value: any) => [formatUGX(value), "Projected Earnings"]}
               />
               <Line
                 type="monotone"

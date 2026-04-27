@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useQuery, useMutation } from "convex/react";
+import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
@@ -10,15 +10,21 @@ import { ProposalView } from "@/components/proposal-view";
 import { EarningsChart } from "@/components/earnings-chart";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
+import { useAuth } from "@/providers/auth-provider";
 
 export default function WorkspacePage() {
   const params = useParams();
   const router = useRouter();
+  const { user } = useAuth();
   const workspaceId = params.id as Id<"workspaces">;
 
   const workspace = useQuery(api.workspaces.getWorkspace, { workspaceId });
   const milestones = useQuery(api.workspaces.getWorkspaceMilestones, { workspaceId });
   const proposal = useQuery(api.workspaces.getWorkspaceProposal, { workspaceId });
+  const currentUser = useQuery(
+    api.users.getCurrentUser,
+    user ? { firebaseId: user.uid } : "skip"
+  );
 
   if (workspace === undefined || milestones === undefined) {
     return (
@@ -43,6 +49,19 @@ export default function WorkspacePage() {
   const totalHours = milestones.reduce((sum, m) => sum + m.estimatedHours, 0);
   const totalCost = milestones.reduce((sum, m) => sum + m.cost, 0);
 
+  // Format currency in UGX
+  const formatUGX = (amount: number) => {
+    return `UGX ${amount.toLocaleString('en-UG')}`;
+  };
+
+  // Prepare user profile for proposal
+  const userProfile = currentUser ? {
+    displayName: currentUser.displayName,
+    primarySkill: currentUser.primarySkill,
+    location: currentUser.location,
+    hourlyRate: currentUser.hourlyRate,
+  } : undefined;
+
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Header */}
@@ -62,7 +81,7 @@ export default function WorkspacePage() {
               <div>
                 <h1 className="text-xl font-bold">{workspace.jobTitle}</h1>
                 <p className="text-sm text-zinc-400">
-                  {totalHours}h • ${totalCost.toLocaleString()}
+                  {totalHours}h • {formatUGX(totalCost)}
                 </p>
               </div>
             </div>
@@ -128,6 +147,7 @@ export default function WorkspacePage() {
                 workspaceId={workspaceId}
                 proposal={proposal}
                 milestones={milestones}
+                userProfile={userProfile}
               />
             </div>
           </motion.div>
