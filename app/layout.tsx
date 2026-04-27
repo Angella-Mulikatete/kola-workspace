@@ -6,6 +6,7 @@ import { AuthProvider } from "@/providers/auth-provider";
 import { ToastProvider } from "@/components/ui/toast";
 import { KeyboardShortcuts } from "@/components/keyboard-shortcuts";
 import { ErrorBoundary } from "@/components/error-boundary";
+import { ThemeProvider } from "@/providers/theme-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,17 +33,19 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
     >
-      <body className="min-h-full flex flex-col bg-black text-white">
-        <ErrorBoundary>
-          <ConvexClientProvider>
-            <AuthProvider>
-              <ToastProvider>
-                {children}
-                <KeyboardShortcuts />
-              </ToastProvider>
-            </AuthProvider>
-          </ConvexClientProvider>
-        </ErrorBoundary>
+      <body className="min-h-full flex flex-col">
+        <ThemeProvider>
+          <ErrorBoundary>
+            <ConvexClientProvider>
+              <AuthProvider>
+                <ToastProvider>
+                  {children}
+                  <KeyboardShortcuts />
+                </ToastProvider>
+              </AuthProvider>
+            </ConvexClientProvider>
+          </ErrorBoundary>
+        </ThemeProvider>
       </body>
     </html>
   );

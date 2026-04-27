@@ -15,6 +15,7 @@ import { celebrateWorkspaceCreation } from "@/lib/confetti";
 import { useToast } from "@/components/ui/toast";
 import { OnboardingTour } from "@/components/onboarding-tour";
 import { FloatingActionButton } from "@/components/floating-action-button";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export default function DashboardPage() {
   const { user, signOut } = useAuth();
@@ -123,9 +124,9 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
-      <header className="border-b border-white/10 backdrop-blur-sm bg-black/50 sticky top-0 z-50">
+      <header className="border-b border-border backdrop-blur-sm bg-background/50 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <h1 className="text-xl font-bold">Kola Workspace</h1>
@@ -134,6 +135,7 @@ export default function DashboardPage() {
             <div className="text-sm text-zinc-400">
               {currentUser.primarySkill} • ${currentUser.hourlyRate}/hr
             </div>
+            <ThemeToggle />
             <Button
               onClick={handleSignOut}
               variant="ghost"
