@@ -55,8 +55,8 @@ export default function WorkspacePage() {
   };
 
   // Prepare user profile for proposal
-  const userProfile = currentUser ? {
-    displayName: currentUser.displayName,
+  const userProfile = currentUser && user ? {
+    displayName: user.displayName || "Professional Freelancer",
     primarySkill: currentUser.primarySkill,
     location: currentUser.location,
     hourlyRate: currentUser.hourlyRate,
