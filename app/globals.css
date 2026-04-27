@@ -5,30 +5,17 @@
     /* Light theme colors */
     --background: 255 255 255;
     --foreground: 0 0 0;
-    --card: 250 250 250;
-    --card-foreground: 0 0 0;
-    --border: 229 229 229;
-    --muted: 245 245 245;
-    --muted-foreground: 115 115 115;
   }
 
   .dark {
     /* Dark theme colors */
     --background: 0 0 0;
     --foreground: 255 255 255;
-    --card: 24 24 27;
-    --card-foreground: 255 255 255;
-    --border: 39 39 42;
-    --muted: 39 39 42;
-    --muted-foreground: 161 161 170;
-  }
-
-  * {
-    @apply border-border;
   }
 
   body {
-    @apply bg-background text-foreground;
+    background-color: rgb(var(--background));
+    color: rgb(var(--foreground));
     transition: background-color 0.3s ease, color 0.3s ease;
   }
 }
@@ -40,31 +27,32 @@
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-transparent;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-white/10 rounded-full;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 9999px;
 }
 
 .dark ::-webkit-scrollbar-thumb {
-  @apply bg-white/10;
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .light ::-webkit-scrollbar-thumb {
-  @apply bg-black/10;
+  background: rgba(0, 0, 0, 0.1);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-white/20;
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .dark ::-webkit-scrollbar-thumb:hover {
-  @apply bg-white/20;
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .light ::-webkit-scrollbar-thumb:hover {
-  @apply bg-black/20;
+  background: rgba(0, 0, 0, 0.2);
 }
 
 /* Kola Workspace - Premium Dark Theme */

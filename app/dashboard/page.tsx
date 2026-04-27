@@ -124,9 +124,9 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-white dark:bg-black text-black dark:text-white">
       {/* Header */}
-      <header className="border-b border-border backdrop-blur-sm bg-background/50 sticky top-0 z-50">
+      <header className="border-b border-zinc-200 dark:border-white/10 backdrop-blur-sm bg-white/50 dark:bg-black/50 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <h1 className="text-xl font-bold">Kola Workspace</h1>

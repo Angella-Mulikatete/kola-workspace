@@ -28,7 +28,7 @@ export default function WorkspacePage() {
 
   if (workspace === undefined || milestones === undefined) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-black">
+      <div className="flex items-center justify-center min-h-screen bg-white dark:bg-black">
         <Loader2 className="w-8 h-8 animate-spin text-zinc-400" />
       </div>
     );
@@ -36,7 +36,7 @@ export default function WorkspacePage() {
 
   if (workspace === null) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white">
+      <div className="flex flex-col items-center justify-center min-h-screen bg-white dark:bg-black text-black dark:text-white">
         <h1 className="text-2xl font-bold mb-4">Workspace not found</h1>
         <Button onClick={() => router.push("/dashboard")}>
           <ArrowLeft className="w-4 h-4 mr-2" />
@@ -63,9 +63,9 @@ export default function WorkspacePage() {
   } : undefined;
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-white dark:bg-black text-black dark:text-white">
       {/* Header */}
-      <header className="border-b border-white/10 backdrop-blur-sm bg-black/50 sticky top-0 z-50">
+      <header className="border-b border-zinc-200 dark:border-white/10 backdrop-blur-sm bg-white/50 dark:bg-black/50 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
