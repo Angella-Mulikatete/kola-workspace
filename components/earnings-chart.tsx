@@ -112,14 +112,14 @@ export function EarningsChart({ milestones }: EarningsChartProps) {
       <div className="space-y-4">
         <div className="flex gap-2 p-1 bg-zinc-900 rounded-lg border border-white/10 h-[42px]" />
         <div className="grid grid-cols-2 gap-4">
-          <div className="p-4 rounded-xl bg-zinc-900 border border-white/10 h-[80px]" />
-          <div className="p-4 rounded-xl bg-zinc-900 border border-white/10 h-[80px]" />
+          <div className="p-4 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 h-[80px]" />
+          <div className="p-4 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 h-[80px]" />
         </div>
-        <div className="p-6 rounded-xl bg-zinc-900 border border-white/10 h-[300px]" />
+        <div className="p-6 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 h-[300px]" />
         <div className="grid grid-cols-3 gap-4">
-          <div className="p-4 rounded-xl bg-zinc-900 border border-white/10 h-[60px]" />
-          <div className="p-4 rounded-xl bg-zinc-900 border border-white/10 h-[60px]" />
-          <div className="p-4 rounded-xl bg-zinc-900 border border-white/10 h-[60px]" />
+          <div className="p-4 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 h-[60px]" />
+          <div className="p-4 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 h-[60px]" />
+          <div className="p-4 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 h-[60px]" />
         </div>
       </div>
     );
@@ -128,7 +128,7 @@ export function EarningsChart({ milestones }: EarningsChartProps) {
   return (
     <div className="space-y-4">
       {/* Chart Type Selector */}
-      <div className="flex gap-2 p-1 bg-zinc-900 rounded-lg border border-white/10">
+      <div className="flex gap-2 p-1 bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-white/10">
         <button
           onClick={() => setView("cumulative")}
           className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-md text-sm transition-all ${
@@ -169,7 +169,7 @@ export function EarningsChart({ milestones }: EarningsChartProps) {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="p-4 rounded-xl bg-zinc-900 border border-white/10"
+          className="p-4 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10"
         >
           <div className="text-2xl font-bold text-green-400">
             {formatUGX(totalEarnings)}
@@ -181,7 +181,7 @@ export function EarningsChart({ milestones }: EarningsChartProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="p-4 rounded-xl bg-zinc-900 border border-white/10"
+          className="p-4 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10"
         >
           <div className="text-2xl font-bold text-blue-400">
             {formatUGX(earnedSoFar)}
@@ -198,7 +198,7 @@ export function EarningsChart({ milestones }: EarningsChartProps) {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.3 }}
-        className="p-6 rounded-xl bg-zinc-900 border border-white/10"
+        className="p-6 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10"
       >
         {view === "cumulative" && (
           <ResponsiveContainer width="100%" height={300}>
@@ -313,7 +313,7 @@ export function EarningsChart({ milestones }: EarningsChartProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="p-4 rounded-xl bg-zinc-900 border border-white/10 text-center"
+          className="p-4 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 text-center"
         >
           <div className="text-xl font-semibold">{milestones.length}</div>
           <div className="text-xs text-zinc-400">Milestones</div>
@@ -323,7 +323,7 @@ export function EarningsChart({ milestones }: EarningsChartProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="p-4 rounded-xl bg-zinc-900 border border-white/10 text-center"
+          className="p-4 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 text-center"
         >
           <div className="text-xl font-semibold">{totalHours}h</div>
           <div className="text-xs text-zinc-400">Total Hours</div>
@@ -333,7 +333,7 @@ export function EarningsChart({ milestones }: EarningsChartProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="p-4 rounded-xl bg-zinc-900 border border-white/10 text-center"
+          className="p-4 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 text-center"
         >
           <div className="text-xl font-semibold">${avgRate}/h</div>
           <div className="text-xs text-zinc-400">Avg Rate</div>

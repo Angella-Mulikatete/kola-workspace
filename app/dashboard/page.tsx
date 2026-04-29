@@ -178,7 +178,7 @@ export default function DashboardPage() {
               <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 rounded-2xl blur-lg opacity-25 group-hover:opacity-40 transition-opacity" />
 
               {/* Input container */}
-              <div className="relative bg-zinc-900 border border-white/10 rounded-2xl p-6 space-y-4">
+              <div className="relative bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 rounded-2xl p-6 space-y-4">
                 <div className="flex items-center gap-3">
                   <div className="p-3 rounded-xl bg-gradient-to-br from-purple-500/20 to-blue-500/20 border border-purple-500/30">
                     <LinkIcon className="w-6 h-6 text-purple-400" />
@@ -264,7 +264,7 @@ export default function DashboardPage() {
                     className={`p-4 rounded-xl ${
                       message.role === "user"
                         ? "bg-blue-500/10 border border-blue-500/20"
-                        : "bg-zinc-900 border border-white/10"
+                        : "bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10"
                     }`}
                   >
                     <div className="font-semibold mb-2">
@@ -318,7 +318,7 @@ export default function DashboardPage() {
               <div className="absolute -inset-1 bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 rounded-2xl blur-lg opacity-25 group-hover:opacity-40 transition-opacity" />
 
               {/* Search container */}
-              <div className="relative bg-zinc-900 border border-white/10 rounded-2xl p-6 space-y-4">
+              <div className="relative bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 rounded-2xl p-6 space-y-4">
                 <div className="flex items-center gap-3">
                   <div className="p-3 rounded-xl bg-gradient-to-br from-green-500/20 to-teal-500/20 border border-green-500/30">
                     <RefreshCw className="w-6 h-6 text-green-400" />

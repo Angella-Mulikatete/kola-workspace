@@ -267,13 +267,13 @@ ${userProfile?.location || 'Location'}`;
         <textarea
           value={editedContent}
           onChange={(e) => setEditedContent(e.target.value)}
-          className="w-full h-[600px] p-6 rounded-xl bg-zinc-900 border border-white/10 text-white font-mono text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full h-[600px] p-6 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 text-zinc-900 dark:text-white font-mono text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="Edit your proposal..."
         />
       ) : (
         <div
           ref={contentRef}
-          className="p-6 rounded-xl bg-zinc-900 border border-white/10 max-h-[600px] overflow-y-auto prose prose-invert prose-sm max-w-none"
+          className="p-6 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 max-h-[600px] overflow-y-auto prose prose-zinc dark:prose-invert prose-sm max-w-none"
         >
           <ReactMarkdown>{generatedProposal}</ReactMarkdown>
         </div>

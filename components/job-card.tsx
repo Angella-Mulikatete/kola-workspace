@@ -41,7 +41,7 @@ export function JobCard({
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -4, scale: 1.02 }}
       transition={{ duration: 0.2 }}
-      className="p-6 rounded-xl bg-zinc-900 border border-white/10 hover:border-purple-500/30 hover:shadow-lg hover:shadow-purple-500/10 transition-all space-y-4 group"
+      className="p-6 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 hover:border-purple-500/30 hover:shadow-lg hover:shadow-purple-500/10 transition-all space-y-4 group"
     >
       {/* Header */}
       <div className="space-y-2">

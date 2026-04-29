@@ -89,11 +89,11 @@ export function MilestoneCard({ milestone, onUpdate }: MilestoneCardProps) {
       animate={{ opacity: 1, y: 0 }}
       className={`p-4 rounded-xl border transition-all ${
         milestone.status === "done"
-          ? "bg-green-500/5 border-green-500/20"
+          ? "bg-green-50 dark:bg-green-500/5 border-green-200 dark:border-green-500/20"
           : milestone.status === "in-progress"
-          ? "bg-blue-500/5 border-blue-500/20"
-          : "bg-zinc-900 border-white/10"
-      } hover:border-white/20`}
+          ? "bg-blue-50 dark:bg-blue-500/5 border-blue-200 dark:border-blue-500/20"
+          : "bg-white dark:bg-zinc-900 border-zinc-200 dark:border-white/10"
+      } hover:border-zinc-300 dark:hover:border-white/20`}
     >
       <div className="flex items-start gap-3">
         {/* Drag Handle */}

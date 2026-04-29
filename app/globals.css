@@ -69,8 +69,6 @@
 
   body {
     font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
-    background-color: #000000;
-    color: #ffffff;
   }
 }
 

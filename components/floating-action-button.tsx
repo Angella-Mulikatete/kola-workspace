@@ -59,7 +59,7 @@ export function FloatingActionButton({
                   action.onClick?.();
                   setIsOpen(false);
                 }}
-                className="flex items-center gap-3 px-4 py-3 rounded-xl bg-zinc-900 border border-white/10 hover:border-white/20 shadow-lg hover:shadow-xl transition-all group"
+                className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 hover:border-zinc-300 dark:hover:border-white/20 shadow-lg hover:shadow-xl transition-all group"
               >
                 <div
                   className={`p-2 rounded-lg bg-gradient-to-br ${action.color} bg-opacity-20`}
