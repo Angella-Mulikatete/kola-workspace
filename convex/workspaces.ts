@@ -174,6 +174,9 @@ export const updateMilestone = mutation({
     cost: v.optional(v.number()),
     title: v.optional(v.string()),
     description: v.optional(v.string()),
+    status: v.optional(
+      v.union(v.literal("todo"), v.literal("in-progress"), v.literal("done"))
+    ),
   },
   handler: async (ctx, args) => {
     const { milestoneId, ...updates } = args;
